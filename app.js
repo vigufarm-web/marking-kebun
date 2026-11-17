@@ -9,7 +9,7 @@ const featureName=f=>{let p=f.properties||{};return String(p.Nama_Blok||p.NAMA_B
 function notice(s){$('message').textContent=s;}
 function writeEvents(next){try{localStorage.setItem(KEY,JSON.stringify(next));events=next;return true;}catch(e){notice('Penyimpanan penuh atau tidak tersedia. Data belum disimpan; unduh cadangan.');return false;}}
 const cloud=createCloud({read:()=>events,write:next=>{const ok=writeEvents(next);if(ok)render();return ok;},onStatus:(s,ok)=>{$('cloudStatus').textContent=s;$('storage').textContent=ok?'Data bersama tersinkron':'Penyimpanan: HP ini';$('syncNotice').textContent=ok?'Data bersama telah tersinkron. Pastikan status ini muncul setelah mencatat.':'Data masih dapat tersimpan di HP ini. '+s;}});
-const settings=cloud.settings();if(settings){$('cloudUrl').value=settings.url;$('cloudKey').value=settings.key;}
+const settings=cloud.settings();$('cloudUrl').value=settings?.url||'https://pavgcpagdeyixafafxdi.supabase.co';if(settings)$('cloudKey').value=settings.key;
 $('cloudLogin').onclick=async()=>{try{await cloud.login($('cloudUrl').value,$('cloudKey').value,$('cloudEmail').value,$('cloudPassword').value);$('cloudPassword').value='';}catch(e){$('cloudStatus').textContent=e.message;}};
 $('cloudSync').onclick=()=>cloud.sync().catch(()=>{});$('cloudLogout').onclick=()=>cloud.logout();
 const syncSoon=()=>{if(cloud.configured())cloud.sync().catch(()=>{});};setInterval(syncSoon,15000);window.addEventListener('online',syncSoon);
