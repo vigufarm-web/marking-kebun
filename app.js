@@ -1,5 +1,5 @@
 import {COLORS,colorByCode,blockFor,latest,mergeEvents} from './core.js';
-import {createCloud} from './cloud.js?v=accounts1';
+import {createCloud} from './cloud.js?v=accounts2';
 const $=id=>document.getElementById(id),KEY='vigu.marking.v1',MAPKEY='vigu.marking.boundaries.v1',MAPVERSION='vigu.marking.boundaries.version';
 let events=[],features=[],position=null,accuracy=null,positionTime=0,selected=null,layer=null,markerLayer=L.layerGroup(),watch=null,activeUser=null;
 try{events=mergeEvents([],JSON.parse(localStorage.getItem(KEY)||'[]'));features=JSON.parse(localStorage.getItem(MAPKEY)||'[]');}catch{ $('message').textContent='Data lokal tidak dapat dibaca; jangan hapus data browser.'; }
@@ -11,6 +11,7 @@ function writeEvents(next){try{const stored=JSON.parse(localStorage.getItem(KEY)
 const cloud=createCloud({read:()=>events,write:next=>{const ok=writeEvents(next);if(ok)render();return ok;},onIdentity:applyIdentity,boundaryVersion:()=>localStorage.getItem(MAPVERSION),onBoundary:row=>{const fs=row.geojson?.features;if(!Array.isArray(fs)||!fs.length||fs.some(f=>!['Polygon','MultiPolygon'].includes(f.geometry?.type)))throw Error('Peta server tidak valid.');localStorage.setItem(MAPKEY,JSON.stringify(fs));localStorage.setItem(MAPVERSION,row.version);features=fs;drawBlocks(true);},onStatus:(s,ok)=>{$('cloudStatus').textContent=s;$('storage').textContent=ok?'Data bersama tersinkron':'Penyimpanan: HP ini';$('syncNotice').textContent=ok?'Data bersama telah tersinkron. Pastikan status ini muncul setelah mencatat.':'Data masih dapat tersimpan di HP ini. '+s;}});
 const settings=cloud.settings();$('cloudUrl').value=settings?.url||'https://pavgcpagdeyixafafxdi.supabase.co';$('cloudKey').value=settings?.key||'sb_publishable_szoOlHYd2zaVc4ewDTxB6w_jXTLA8Pi';
 $('cloudLogin').onclick=async()=>{try{await cloud.login($('cloudUrl').value,$('cloudKey').value,$('cloudEmail').value,$('cloudPassword').value);$('cloudPassword').value='';}catch(e){$('cloudStatus').textContent=e.message;}};
+$('checkAdmin').onclick=async()=>{try{await cloud.checkAdmin();$('userStatus').textContent='Layanan akun siap; akses admin terverifikasi.';}catch(e){$('userStatus').textContent='Layanan akun belum siap: '+e.message;}};
 $('userForm').onsubmit=async e=>{e.preventDefault();$('userStatus').textContent='Membuat akun…';try{const r=await cloud.createUser($('newName').value,$('newEmail').value,$('newPassword').value);$('newPassword').value='';$('userForm').reset();$('userStatus').textContent='Akun petugas '+r.name+' berhasil dibuat.';}catch(err){$('userStatus').textContent='Akun belum dipastikan dibuat: '+err.message+' Periksa daftar pengguna sebelum mencoba ulang.';}};
 $('cloudSync').onclick=()=>cloud.sync().catch(()=>{});$('cloudLogout').onclick=()=>cloud.logout();
 const syncSoon=()=>{if(cloud.configured())cloud.sync().catch(()=>{});};setInterval(syncSoon,15000);window.addEventListener('online',syncSoon);

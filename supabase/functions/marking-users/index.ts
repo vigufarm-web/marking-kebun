@@ -19,17 +19,20 @@ export function createHandler(env: {url:string; serviceKey:string}, request: typ
       if(!membership.ok)return reply(503,{error:'Tidak dapat memeriksa hak admin.'});
       const roles=await membership.json();
       if(roles.length!==1||roles[0].role!=='admin')return reply(403,{error:'Hanya admin yang dapat membuat akun.'});
-      const input=await req.json(),email=String(input.email||'').trim().toLowerCase(),name=String(input.name||'').trim().replace(/\s+/g,' '),password=String(input.password||'');
-      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)||email.length>254||!name||name.length>80||password.length<8||password.length>128)return reply(400,{error:'Isi nama, email yang valid, dan password minimal 8 karakter.'});
+      const input=await req.json();
+      if(input.action==='check')return reply(200,{ok:true});
+      const username=String(input.username||'').trim().toLowerCase(),name=String(input.name||'').trim().replace(/\s+/g,' '),password=String(input.password||'');
+      const email=username+'@marking.vigufarm.invalid';
+      if(!/^[a-z0-9][a-z0-9._-]{2,29}$/.test(username)||!name||name.length>80||!/^[0-9]{8,16}$/.test(password))return reply(400,{error:'Isi nama, username 3–30 karakter dan PIN 8–16 angka.'});
       const created=await request(`${env.url}/auth/v1/admin/users`,{method:'POST',headers:adminHeaders,body:JSON.stringify({email,password,email_confirm:true,user_metadata:{display_name:name}})});
-      if(!created.ok)return reply(created.status===422?409:400,{error:'Akun tidak dapat dibuat. Periksa email, password, atau kemungkinan email sudah terdaftar.'});
+      if(!created.ok)return reply(created.status===422?409:400,{error:'Akun tidak dapat dibuat. Periksa username dan PIN, atau kemungkinan username sudah terdaftar.'});
       const account=await created.json();if(!account.id)return reply(502,{error:'Server tidak mengembalikan identitas akun. Periksa daftar pengguna.'});
       const add=await request(`${env.url}/rest/v1/marking_members`,{method:'POST',headers:{...adminHeaders,Prefer:'return=minimal'},body:JSON.stringify({user_id:account.id,display_name:name,role:'petugas'})});
       if(!add.ok){
         const rollback=await request(`${env.url}/auth/v1/admin/users/${encodeURIComponent(account.id)}`,{method:'DELETE',headers:adminHeaders});
         return reply(503,{error:rollback.ok?'Akses belum dapat dibuat; akun baru dibatalkan. Coba lagi.':'Akses gagal disimpan dan akun baru perlu diperiksa admin di Supabase.'});
       }
-      return reply(201,{ok:true,name,email});
+      return reply(201,{ok:true,name,username});
     }catch{return reply(503,{error:'Server belum dapat menyelesaikan permintaan. Periksa daftar pengguna sebelum mencoba ulang.'});}
   };
 }
