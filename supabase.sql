@@ -1,7 +1,9 @@
 -- Jalankan pada project Supabase khusus Marking Kebun setelah menonaktifkan
 -- pendaftaran publik dan membuat akun petugas melalui dashboard Auth.
 create table if not exists public.marking_members (
-  user_id uuid primary key references auth.users(id) on delete cascade
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  display_name text not null check (length(trim(display_name)) between 1 and 80),
+  role text not null default 'petugas' check (role in ('admin','petugas'))
 );
 alter table public.marking_members enable row level security;
 revoke all on public.marking_members from anon, authenticated;
@@ -27,4 +29,8 @@ grant select, insert on public.marking_events to authenticated;
 drop policy if exists marking_read on public.marking_events;
 create policy marking_read on public.marking_events for select to authenticated using (exists (select 1 from public.marking_members where user_id = auth.uid()));
 drop policy if exists marking_insert on public.marking_events;
-create policy marking_insert on public.marking_events for insert to authenticated with check (exists (select 1 from public.marking_members where user_id = auth.uid()));
+create policy marking_insert on public.marking_events for insert to authenticated with check (
+  payload->>'createdBy' = auth.uid()::text and exists (
+    select 1 from public.marking_members where user_id = auth.uid() and display_name = payload->>'officer'
+  )
+);
