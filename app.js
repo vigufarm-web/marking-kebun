@@ -1,5 +1,5 @@
 import {COLORS,colorByCode,blockFor,latest,mergeEvents} from './core.js';
-import {createCloud} from './cloud.js?v=accounts2';
+import {createCloud} from './cloud.js?v=accounts3';
 const $=id=>document.getElementById(id),KEY='vigu.marking.v1',MAPKEY='vigu.marking.boundaries.v1',MAPVERSION='vigu.marking.boundaries.version';
 let events=[],features=[],position=null,accuracy=null,positionTime=0,selected=null,layer=null,markerLayer=L.layerGroup(),watch=null,activeUser=null;
 try{events=mergeEvents([],JSON.parse(localStorage.getItem(KEY)||'[]'));features=JSON.parse(localStorage.getItem(MAPKEY)||'[]');}catch{ $('message').textContent='Data lokal tidak dapat dibaca; jangan hapus data browser.'; }

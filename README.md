@@ -4,7 +4,7 @@ Aplikasi mencatat satu titik per tandan, warna pita, tanggal, posisi, blok, peru
 
 ## Penggunaan
 
-Buka aplikasi, masuk dengan username dan PIN (akun admin lama tetap dapat memakai email dan password), izinkan lokasi, pilih tanggal, tunggu posisi dan tekan warna pita. Pilih titik untuk merevisi atau menandai panen. Admin dapat membuat akun petugas melalui menu Kelola akun petugas. Semua petugas yang terdaftar dapat membaca seluruh peta dan catatan marking. PIN awal 8–16 angka dimasukkan langsung oleh admin ke aplikasi dan tidak boleh dikirim ke log atau ditulis di repositori.
+Buka aplikasi, masuk dengan username dan PIN (akun admin lama tetap dapat memakai email dan password), izinkan lokasi, pilih tanggal, tunggu posisi dan tekan warna pita. Pilih titik untuk merevisi atau menandai panen. Admin dapat membuat akun petugas melalui menu Kelola akun petugas. Semua petugas yang terdaftar dapat membaca seluruh peta dan catatan marking. PIN awal 6–16 angka dimasukkan langsung oleh admin ke aplikasi dan tidak boleh dikirim ke log atau ditulis di repositori.
 
 Batas blok yang diunggah admin tersimpan privat dan dimuat oleh perangkat anggota. Peta GIS adalah salinan; perubahan GIS tidak otomatis masuk dan harus diunggah ulang. Peta dasar mungkin kosong tanpa internet. Saat offline catatan disimpan di browser, lalu dikirim saat koneksi kembali. Tunggu status Tersinkron sebelum menutup atau membersihkan browser. Cadangkan data rutin; jangan memakai mode privat.
 
