@@ -1,5 +1,16 @@
-# Marking Pisang — versi uji
+# Marking Kebun — percobaan
 
-Jalankan `Jalankan.cmd` lalu buka http://localhost:8765/. Pilih nama petugas, tanggal dan unggah ZIP SHP berisi .shp, .dbf serta .prj (atau GeoJSON). Tekan Posisi saya, tunggu GPS, lalu tekan warna untuk mencatat satu tandan. Pilih titik untuk mengganti warna atau menandai panen; riwayat tersimpan. Tanggal mengatur keadaan peta sampai hari itu.
+Aplikasi mencatat satu titik per tandan, pilihan warna pita, tanggal, posisi, blok, perubahan warna dan status panen. Untuk menjalankan lokal buka `Jalankan.cmd`. Unggah batas blok berupa ZIP SHP (.shp, .dbf, .prj) atau GeoJSON. GPS dapat meleset dan tidak menjamin dua titik mewakili tandan yang berbeda.
 
-Data dan batas blok disimpan di browser perangkat, bukan di server bersama. Gunakan Unduh cadangan dan Gabungkan cadangan untuk pemindahan manual. Pembersihan data browser dapat menghapus catatan. GitHub Pages dapat menyajikan kode, tetapi penyimpanan bersama dan akun petugas perlu layanan server tambahan. Fitur offline memerlukan kunjungan awal saat online, dan peta dasar mungkin tidak tersedia tanpa internet. GPS telepon bisa meleset dan tidak menjamin identitas tandan; konfirmasi dengan penanda fisik. Simpan cadangan rutin.
+## Database bersama
+
+Repositori ini tidak menyimpan data GPS. Sinkronisasi memerlukan proyek Supabase terpisah dan belum aktif sebelum disiapkan:
+
+1. Buat proyek Supabase khusus, lalu jalankan `supabase.sql` di SQL Editor.
+2. Nonaktifkan pendaftaran umum. Buat akun petugas pada Authentication, dan untuk setiap akun yang boleh masuk daftarkan ID pengguna melalui SQL Editor: `insert into public.marking_members(user_id) values ('UUID-PENGGUNA');`. Hanya anggota yang didaftarkan dapat membaca dan menambah data. Semua anggota dapat membaca semua data marking; tidak ada pemisahan per blok.
+3. Berikan URL proyek dan **publishable/anon key** ke petugas. Jangan pernah membagikan service role key atau secret key. Di aplikasi buka **Hubungkan database bersama**, isi URL, kunci publik, serta email dan password akun petugas masing-masing.
+4. Tunggu status **Tersinkron**. Bila offline, catatan tetap lokal dan dicoba ulang saat koneksi kembali. Jangan hapus data browser sebelum sinkronisasi berhasil dan cadangan diunduh.
+
+Setiap perubahan dicatat sebagai peristiwa baru. Klien menggabungkan ID unik dan menolak ID yang sama dengan isi berbeda. Bila dua petugas mengubah tandan yang sama, keadaan pada tanggal yang sama mengikuti waktu catatan dan ID sebagai penentu saat sama; koreksi memerlukan koordinasi petugas. Semua anggota dapat menambah peristiwa; aplikasi ini belum menyediakan peran admin, pemulihan atau pembatasan edit per orang.
+
+Batas blok SHP saat ini **tersimpan per perangkat**, belum disinkronkan. Peta dasar daring mungkin tidak tersedia tanpa internet; penggunaan offline memerlukan kunjungan awal saat online. Simpan cadangan rutin dan jangan menggunakan mode privat untuk data yang belum tersinkron.
