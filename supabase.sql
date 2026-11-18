@@ -6,13 +6,14 @@ create table if not exists public.marking_members (
   role text not null default 'petugas' check (role in ('admin','petugas')),
   job text not null default 'sensus' check (job in ('sensus','panen')),
   report_access boolean not null default false,
-  map_access boolean not null default false
+  map_access boolean not null default false,
+  active boolean not null default true
 );
 alter table public.marking_members enable row level security;
 revoke all on public.marking_members from public, anon, authenticated;
 grant select on public.marking_members to authenticated;
 drop policy if exists marking_members_self on public.marking_members;
-create policy marking_members_self on public.marking_members for select to authenticated using (user_id = auth.uid());
+create policy marking_members_self on public.marking_members for select to authenticated using (user_id = auth.uid() and active=true);
 
 create table if not exists public.marking_events (
   id uuid primary key,
