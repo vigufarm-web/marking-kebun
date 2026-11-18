@@ -19,3 +19,7 @@ Batas blok yang diunggah admin tersimpan privat dan dimuat oleh perangkat anggot
 Setiap perubahan disimpan sebagai peristiwa baru. ID unik mencegah pengulangan; saat dua petugas merevisi tandan yang sama pada tanggal yang sama, catatan terakhir menurut waktu dan ID menjadi tampilan aktif sementara riwayat tetap ada. Jam HP yang tidak benar dapat mengacaukan urutan. Aplikasi belum menyediakan perbaikan administrasi atas data lama, manajemen perubahan PIN, atau sinkronisasi otomatis peta dari GIS.
 
 Admin memilih warna siap panen pada Kelola akun petugas. Semua petugas melihat jumlah per blok dan daftar tandan aktif dengan warna yang dipilih; bila tidak ada warna dipilih, tidak ada tandan yang otomatis dianggap siap. Peta blok tetap terbaca untuk petugas, sedangkan penggantian GeoJSON dibatasi admin.
+
+Akun sensus dapat mencatat warna dan melihat ringkasan; akun panen melihat peta dan daftar siap panen; admin dapat mengelola serta melihat rekap tandan baru per tanggal dan warna awal. Akun petugas lama otomatis menjadi sensus. Jalankan roles-migration.sql sebelum mengaktifkan antarmuka ini.
+
+Admin dapat mengunduh Excel rekap per tanggal, blok dan warna pertama serta detail tandan. Ekspor memakai filter blok dan seluruh catatan sampai tanggal yang dipilih; penanda sumber dalam berkas menunjukkan apakah data telah tersinkron.

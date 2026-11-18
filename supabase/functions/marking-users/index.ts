@@ -21,18 +21,19 @@ export function createHandler(env: {url:string; serviceKey:string}, request: typ
       if(roles.length!==1||roles[0].role!=='admin')return reply(403,{error:'Hanya admin yang dapat membuat akun.'});
       const input=await req.json();
       if(input.action==='check')return reply(200,{ok:true});
+      const job=String(input.job||'sensus');if(!['sensus','panen'].includes(job))return reply(400,{error:'Pilih tugas sensus atau panen.'});
       const username=String(input.username||'').trim().toLowerCase(),name=String(input.name||'').trim().replace(/\s+/g,' '),password=String(input.password||'');
       const email=username+'@marking.vigufarm.invalid';
       if(!/^[a-z0-9][a-z0-9._-]{2,29}$/.test(username)||!name||name.length>80||!/^[0-9]{6,16}$/.test(password))return reply(400,{error:'Isi nama, username 3–30 karakter dan PIN 6–16 angka.'});
       const created=await request(`${env.url}/auth/v1/admin/users`,{method:'POST',headers:adminHeaders,body:JSON.stringify({email,password: 'Marking-'+password,email_confirm:true,user_metadata:{display_name:name}})});
       if(!created.ok)return reply(created.status===422?409:400,{error:'Akun tidak dapat dibuat. Periksa username dan PIN, atau kemungkinan username sudah terdaftar.'});
       const account=await created.json();if(!account.id)return reply(502,{error:'Server tidak mengembalikan identitas akun. Periksa daftar pengguna.'});
-      const add=await request(`${env.url}/rest/v1/marking_members`,{method:'POST',headers:{...adminHeaders,Prefer:'return=minimal'},body:JSON.stringify({user_id:account.id,display_name:name,role:'petugas'})});
+      const add=await request(`${env.url}/rest/v1/marking_members`,{method:'POST',headers:{...adminHeaders,Prefer:'return=minimal'},body:JSON.stringify({user_id:account.id,display_name:name,role:'petugas',job})});
       if(!add.ok){
         const rollback=await request(`${env.url}/auth/v1/admin/users/${encodeURIComponent(account.id)}`,{method:'DELETE',headers:adminHeaders});
         return reply(503,{error:rollback.ok?'Akses belum dapat dibuat; akun baru dibatalkan. Coba lagi.':'Akses gagal disimpan dan akun baru perlu diperiksa admin di Supabase.'});
       }
-      return reply(201,{ok:true,name,username});
+      return reply(201,{ok:true,name,username,job});
     }catch{return reply(503,{error:'Server belum dapat menyelesaikan permintaan. Periksa daftar pengguna sebelum mencoba ulang.'});}
   };
 }

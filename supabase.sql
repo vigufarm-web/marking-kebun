@@ -3,7 +3,8 @@
 create table if not exists public.marking_members (
   user_id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null check (length(trim(display_name)) between 1 and 80),
-  role text not null default 'petugas' check (role in ('admin','petugas'))
+  role text not null default 'petugas' check (role in ('admin','petugas')),
+  job text not null default 'sensus' check (job in ('sensus','panen'))
 );
 alter table public.marking_members enable row level security;
 revoke all on public.marking_members from anon, authenticated;
@@ -31,6 +32,6 @@ create policy marking_read on public.marking_events for select to authenticated 
 drop policy if exists marking_insert on public.marking_events;
 create policy marking_insert on public.marking_events for insert to authenticated with check (
   payload->>'createdBy' = auth.uid()::text and exists (
-    select 1 from public.marking_members where user_id = auth.uid() and display_name = payload->>'officer'
+    select 1 from public.marking_members where user_id = auth.uid() and display_name = payload->>'officer' and (role='admin' or (job='sensus' and payload->>'status'='active'))
   )
 );
