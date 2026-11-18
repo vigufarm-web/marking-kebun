@@ -49,18 +49,20 @@ export function createHandler(env: {url:string; serviceKey:string}, request: typ
     for(const m of members){if(!uuid(m.user_id))continue;const res=await request(env.url+'/auth/v1/admin/users/'+m.user_id,{headers:ah});if(!res.ok)return reply(503,{error:'Identitas akun belum tersedia.'});const u=await res.json(),email=String(u.email||'');results.push({id:m.user_id,name:m.display_name,role:m.role,job:m.job,active:m.active===true,username:email.endsWith('@marking.vigufarm.invalid')?email.split('@')[0]:email});}return reply(200,{users:results});
    }
    const id=input.userId;if(!uuid(id)||id===actor.id)return reply(400,{error:'Pilih akun petugas lain.'});
-   const tr=await request(env.url+'/rest/v1/marking_members?select=user_id,role,active&user_id=eq.'+encodeURIComponent(id),{headers:ah});if(!tr.ok)return reply(503,{error:'Akun tidak dapat diperiksa.'});const targets=await tr.json();if(targets.length!==1||targets[0].role==='admin')return reply(403,{error:'Hanya akun petugas dapat dikelola dari menu ini.'});
+   const tr=await request(env.url+'/rest/v1/marking_members?select=user_id,role,active&user_id=eq.'+encodeURIComponent(id),{headers:ah});if(!tr.ok)return reply(503,{error:'Akun tidak dapat diperiksa.'});const targets=await tr.json();if(targets.length!==1)return reply(404,{error:'Akun tidak ditemukan.'});
    if(action==='rename'){
+    if(targets[0].role==='admin')return reply(403,{error:'Admin mengganti username sendiri melalui pengaturan akun.'});
     const name=String(input.username||'').trim().toLowerCase();if(!validUsername(name))return reply(400,{error:'Username 3–30 karakter huruf, angka, titik, garis bawah atau strip.'});
     const result=await request(env.url+'/auth/v1/admin/users/'+id,{method:'PUT',headers:ah,body:JSON.stringify({email:name+'@marking.vigufarm.invalid',email_confirm:true})});if(!result.ok)return reply(409,{error:'Username sudah dipakai atau perubahan ditolak.'});return reply(200,{ok:true,username:name});
    }
-   if(action==='disable'){
-    const r=await request(env.url+'/rest/v1/marking_members?user_id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{...ah,Prefer:'return=representation'},body:JSON.stringify({active:false})});if(!r.ok||(await r.json()).length!==1)return reply(503,{error:'Akun belum berhasil dinonaktifkan.'});return reply(200,{ok:true,active:false});
+   if(action==='reset_pin'){
+    const ar=await request(env.url+'/auth/v1/admin/users/'+id,{headers:ah});if(!ar.ok)return reply(503,{error:'Identitas akun belum dapat diperiksa.'});const target=await ar.json();if(typeof target.email!=='string')return reply(503,{error:'Identitas akun belum tersedia.'});
+    const buf=new Uint32Array(1);crypto.getRandomValues(buf);const nextPin=String(buf[0]%100000000).padStart(8,'0'),password=target.email.endsWith('@marking.vigufarm.invalid')?'Marking-'+nextPin:nextPin;
+    const reset=await request(env.url+'/auth/v1/admin/users/'+id,{method:'PUT',headers:ah,body:JSON.stringify({password})});if(!reset.ok)return reply(503,{error:'PIN belum berhasil direset.'});return reply(200,{ok:true,pin:nextPin});
    }
-   if(action==='activate_reset'){
-    if(targets[0].active)return reply(400,{error:'Nonaktifkan akun dahulu sebelum membuat PIN baru.'});const buf=new Uint32Array(1);crypto.getRandomValues(buf);const nextPin=String(buf[0]%100000000).padStart(8,'0');
-    const reset=await request(env.url+'/auth/v1/admin/users/'+id,{method:'PUT',headers:ah,body:JSON.stringify({password:'Marking-'+nextPin})});if(!reset.ok)return reply(503,{error:'PIN belum berhasil direset; akun tetap nonaktif.'});
-    const r=await request(env.url+'/rest/v1/marking_members?user_id=eq.'+encodeURIComponent(id)+'&active=eq.false',{method:'PATCH',headers:{...ah,Prefer:'return=representation'},body:JSON.stringify({active:true})});if(!r.ok||(await r.json()).length!==1)return reply(503,{error:'PIN berubah tetapi akun tetap nonaktif. Coba aktifkan ulang untuk membuat PIN baru.'});return reply(200,{ok:true,active:true,pin:nextPin});
+   if(action==='delete'){
+    const removed=await request(env.url+'/rest/v1/rpc/marking_delete_account',{method:'POST',headers:ah,body:JSON.stringify({actor_id:actor.id,target_id:id})});
+    if(!removed.ok)return reply(409,{error:'Akun belum dihapus. Admin terakhir tidak boleh dihapus; periksa hak dan status akun.'});return reply(200,{ok:true});
    }
    return reply(400,{error:'Tindakan tidak dikenali.'});
   }catch{return reply(503,{error:'Permintaan belum dapat diselesaikan; periksa kembali status akun.'});}
