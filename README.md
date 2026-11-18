@@ -17,3 +17,5 @@ Batas blok yang diunggah admin tersimpan privat dan dimuat oleh perangkat anggot
 5. Untuk proyek yang menggunakan skema lama, adaptasi `member-profile-migration.sql`; gunakan RLS yang mewajibkan ID serta nama pembuat sesuai akun. Catatan lokal lama tanpa identitas akun tidak otomatis dikirim agar tidak salah atribusi.
 
 Setiap perubahan disimpan sebagai peristiwa baru. ID unik mencegah pengulangan; saat dua petugas merevisi tandan yang sama pada tanggal yang sama, catatan terakhir menurut waktu dan ID menjadi tampilan aktif sementara riwayat tetap ada. Jam HP yang tidak benar dapat mengacaukan urutan. Aplikasi belum menyediakan perbaikan administrasi atas data lama, manajemen perubahan PIN, atau sinkronisasi otomatis peta dari GIS.
+
+Admin memilih warna siap panen pada Kelola akun petugas. Semua petugas melihat jumlah per blok dan daftar tandan aktif dengan warna yang dipilih; bila tidak ada warna dipilih, tidak ada tandan yang otomatis dianggap siap. Peta blok tetap terbaca untuk petugas, sedangkan penggantian GeoJSON dibatasi admin.

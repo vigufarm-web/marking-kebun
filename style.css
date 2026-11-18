@@ -4,3 +4,5 @@
 .connection{background:white;border-radius:12px;padding:14px;margin-bottom:12px}.connection summary{cursor:pointer;font-weight:700}.connection .controls{padding:10px 0}.connection .actions{margin:10px 0}
 
 .map-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}.map-actions button{padding:8px;font-size:13px}.map-actions #follow[aria-pressed="true"]{background:#20583c;color:#fff}.mapbar{gap:8px;flex-wrap:wrap}
+
+.harvest-options{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}.harvest-options label{display:flex;align-items:center;gap:4px}.ready-item{display:block;width:100%;text-align:left;margin:4px 0;padding:8px;font-weight:400}fieldset{border:1px solid #d4e2d5;border-radius:8px;margin:12px 0}fieldset p{font-size:13px;color:#52695a}
