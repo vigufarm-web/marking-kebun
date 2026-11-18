@@ -10,3 +10,7 @@
 .gps-icon{background:transparent;border:0}.gps-heading{display:block;width:20px;height:20px;position:relative;transform-origin:center}.gps-heading:before{content:"";position:absolute;left:4px;top:4px;width:12px;height:12px;border-radius:50%;background:#2675ef;border:2px solid white;box-shadow:0 0 3px #17457b}.gps-heading.has-direction:before{left:3px;top:0;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:19px solid #1668ed;border-top:0;border-radius:0;background:none;filter:drop-shadow(0 0 1px white);box-shadow:none}
 
 .layout.public-map{grid-template-columns:1fr}
+
+.leaflet-tooltip.block-label{padding:1px 3px;border:0;border-radius:3px;background:rgba(255,255,255,.78);box-shadow:none;color:#194e30;font-size:10px;font-weight:700;white-space:nowrap;pointer-events:none}.leaflet-tooltip.block-label:before{display:none}
+
+.report-scroll{overflow-x:auto}.census-table{border-collapse:collapse;width:100%;font-size:13px}.census-table th,.census-table td{border-bottom:1px solid #e4ece5;padding:7px;text-align:left;vertical-align:top}.census-table th{background:#edf5ed}.census-table th:last-child,.census-table td:last-child{text-align:right}

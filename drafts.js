@@ -1,5 +1,5 @@
 // Draf disimpan terpisah dari antrean sinkronisasi agar tidak terkirim otomatis.
-import {mergeEvents} from './core.js?v=edit9';
+import {mergeEvents} from './core.js?v=map10';
 export const DRAFT_KEY='vigu.marking.drafts.v1';
 export function readDrafts(storage){
   const value=JSON.parse(storage.getItem(DRAFT_KEY)||'[]');
