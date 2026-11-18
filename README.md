@@ -23,3 +23,5 @@ Admin memilih warna siap panen pada Kelola akun petugas. Semua petugas melihat j
 Akun sensus dapat mencatat warna dan melihat ringkasan; akun panen melihat peta dan daftar siap panen; admin dapat mengelola serta melihat rekap tandan baru per tanggal dan warna awal. Akun petugas lama otomatis menjadi sensus. Jalankan roles-migration.sql sebelum mengaktifkan antarmuka ini.
 
 Admin dapat mengunduh Excel rekap per tanggal, blok dan warna pertama serta detail tandan. Ekspor memakai filter blok dan seluruh catatan sampai tanggal yang dipilih; penanda sumber dalam berkas menunjukkan apakah data telah tersinkron.
+
+Titik baru hanya dapat disimpan jika GPS berada dalam tepat satu blok GIS. Jika di luar/tumpang tindih, petugas diminta bergeser. Di dekat batas atau saat akurasi di atas 30 meter muncul peringatan; petugas dapat membatalkan untuk memperbaiki posisi. Panah arah memerlukan kompas absolut/heading GPS dan izin sensor pada perangkat yang memintanya; tanpa arah, posisi tetap berupa titik.

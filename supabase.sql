@@ -31,7 +31,7 @@ drop policy if exists marking_read on public.marking_events;
 create policy marking_read on public.marking_events for select to authenticated using (exists (select 1 from public.marking_members where user_id = auth.uid()));
 drop policy if exists marking_insert on public.marking_events;
 create policy marking_insert on public.marking_events for insert to authenticated with check (
-  payload->>'createdBy' = auth.uid()::text and exists (
+  nullif(btrim(payload->>'block'),'') is not null and payload->>'createdBy' = auth.uid()::text and exists (
     select 1 from public.marking_members where user_id = auth.uid() and display_name = payload->>'officer' and (role='admin' or (job='sensus' and payload->>'status'='active'))
   )
 );
