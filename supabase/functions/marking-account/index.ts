@@ -45,11 +45,16 @@ export function createHandler(env: {url:string; serviceKey:string}, request: typ
     return reply(201,{ok:true,name,username:user,access});
    }
    if(action==='list'){
-    const list=await request(env.url+'/rest/v1/marking_members?select=user_id,display_name,role,job,active&order=display_name.asc',{headers:ah});if(!list.ok)return reply(503,{error:'Daftar akun belum tersedia.'});const members=await list.json(),results=[];
-    for(const m of members){if(!uuid(m.user_id))continue;const res=await request(env.url+'/auth/v1/admin/users/'+m.user_id,{headers:ah});if(!res.ok)return reply(503,{error:'Identitas akun belum tersedia.'});const u=await res.json(),email=String(u.email||'');results.push({id:m.user_id,name:m.display_name,role:m.role,job:m.job,active:m.active===true,username:email.endsWith('@marking.vigufarm.invalid')?email.split('@')[0]:email});}return reply(200,{users:results});
+    const list=await request(env.url+'/rest/v1/marking_members?select=user_id,display_name,role,job,active,harvest_access&order=display_name.asc',{headers:ah});if(!list.ok)return reply(503,{error:'Daftar akun belum tersedia.'});const members=await list.json(),results=[];
+    for(const m of members){if(!uuid(m.user_id))continue;const res=await request(env.url+'/auth/v1/admin/users/'+m.user_id,{headers:ah});if(!res.ok)return reply(503,{error:'Identitas akun belum tersedia.'});const u=await res.json(),email=String(u.email||'');results.push({id:m.user_id,name:m.display_name,role:m.role,job:m.job,active:m.active===true,harvestAccess:m.harvest_access===true,username:email.endsWith('@marking.vigufarm.invalid')?email.split('@')[0]:email});}return reply(200,{users:results});
    }
    const id=input.userId;if(!uuid(id)||id===actor.id)return reply(400,{error:'Pilih akun petugas lain.'});
    const tr=await request(env.url+'/rest/v1/marking_members?select=user_id,role,active&user_id=eq.'+encodeURIComponent(id),{headers:ah});if(!tr.ok)return reply(503,{error:'Akun tidak dapat diperiksa.'});const targets=await tr.json();if(targets.length!==1)return reply(404,{error:'Akun tidak ditemukan.'});
+   if(action==='set_harvest_access'){
+    if(targets[0].role==='admin'||typeof input.enabled!=='boolean')return reply(400,{error:'Pilih hak panen petugas dengan benar.'});
+    const update=await request(env.url+'/rest/v1/marking_members?user_id=eq.'+encodeURIComponent(id),{method:'PATCH',headers:{...ah,Prefer:'return=representation'},body:JSON.stringify({harvest_access:input.enabled})});
+    if(!update.ok||(await update.json()).length!==1)return reply(503,{error:'Hak panen belum tersimpan.'});return reply(200,{ok:true,harvestAccess:input.enabled});
+   }
    if(action==='rename'){
     if(targets[0].role==='admin')return reply(403,{error:'Admin mengganti username sendiri melalui pengaturan akun.'});
     const name=String(input.username||'').trim().toLowerCase();if(!validUsername(name))return reply(400,{error:'Username 3–30 karakter huruf, angka, titik, garis bawah atau strip.'});

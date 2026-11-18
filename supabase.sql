@@ -7,6 +7,7 @@ create table if not exists public.marking_members (
   job text not null default 'sensus' check (job in ('sensus','panen')),
   report_access boolean not null default false,
   map_access boolean not null default false,
+  harvest_access boolean not null default false,
   active boolean not null default true
 );
 alter table public.marking_members enable row level security;
