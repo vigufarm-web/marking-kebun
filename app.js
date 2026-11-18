@@ -1,5 +1,5 @@
 import {COLORS,colorByCode,blockFor,boundaryDistanceMeters,latest,mergeEvents,dailyCensus,censusByBlock} from './core.js?v=harvest15';
-import {buildMapPrint} from './map-print.js?v=harvest15';
+import {buildMapPrint} from './map-print.js?v=map16';
 import {buildCensusSheets} from './report.js?v=harvest15';
 import {unduhXlsx} from './vendor/xlsx-tulis.js';
 import {DRAFT_KEY,readDrafts,changeDraft,addDraft,removeQueuedDrafts} from './drafts.js?v=harvest15';
