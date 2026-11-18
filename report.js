@@ -1,4 +1,4 @@
-import {COLORS,firstCensus,censusByBlock,latest} from './core.js?v=block7';
+import {COLORS,firstCensus,censusByBlock,latest} from './core.js?v=public8';
 import {S} from './vendor/xlsx-tulis.js';
 
 export function buildCensusSheets(events,until,block='',synced=false){

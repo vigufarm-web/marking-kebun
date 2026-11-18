@@ -25,3 +25,5 @@ Akun sensus dapat mencatat warna dan melihat ringkasan; akun panen melihat peta 
 Admin dapat mengunduh Excel rekap per tanggal, blok dan warna pertama serta detail tandan. Ekspor memakai filter blok dan seluruh catatan sampai tanggal yang dipilih; penanda sumber dalam berkas menunjukkan apakah data telah tersinkron.
 
 Titik baru hanya dapat disimpan jika GPS berada dalam tepat satu blok GIS. Jika di luar/tumpang tindih, petugas diminta bergeser. Di dekat batas atau saat akurasi di atas 30 meter muncul peringatan; petugas dapat membatalkan untuk memperbaiki posisi. Panah arah memerlukan kompas absolut/heading GPS dan izin sensor pada perangkat yang memintanya; tanpa arah, posisi tetap berupa titik.
+
+Tanpa login, pengunjung dapat melihat batas blok dan titik aktif melalui tampilan publik yang hanya berisi geometri blok, koordinat dan warna; pencatatan dan rekap akun tetap memerlukan login. Akses publik disediakan oleh public-map-migration.sql.

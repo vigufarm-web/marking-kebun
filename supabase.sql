@@ -7,7 +7,7 @@ create table if not exists public.marking_members (
   job text not null default 'sensus' check (job in ('sensus','panen'))
 );
 alter table public.marking_members enable row level security;
-revoke all on public.marking_members from anon, authenticated;
+revoke all on public.marking_members from public, anon, authenticated;
 grant select on public.marking_members to authenticated;
 drop policy if exists marking_members_self on public.marking_members;
 create policy marking_members_self on public.marking_members for select to authenticated using (user_id = auth.uid());
@@ -25,7 +25,7 @@ create table if not exists public.marking_events (
   )
 );
 alter table public.marking_events enable row level security;
-revoke all on public.marking_events from anon, authenticated;
+revoke all on public.marking_events from public, anon, authenticated;
 grant select, insert on public.marking_events to authenticated;
 drop policy if exists marking_read on public.marking_events;
 create policy marking_read on public.marking_events for select to authenticated using (exists (select 1 from public.marking_members where user_id = auth.uid()));
