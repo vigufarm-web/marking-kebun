@@ -14,3 +14,7 @@
 .leaflet-tooltip.block-label{padding:1px 3px;border:0;border-radius:3px;background:rgba(255,255,255,.78);box-shadow:none;color:#194e30;font-size:10px;font-weight:700;white-space:nowrap;pointer-events:none}.leaflet-tooltip.block-label:before{display:none}
 
 .report-scroll{overflow-x:auto}.census-table{border-collapse:collapse;width:100%;font-size:13px}.census-table th,.census-table td{border-bottom:1px solid #e4ece5;padding:7px;text-align:left;vertical-align:top}.census-table th{background:#edf5ed}.census-table th:last-child,.census-table td:last-child{text-align:right}
+
+.managed-user{display:flex;flex-wrap:wrap;gap:8px;align-items:center;border-bottom:1px solid #d4e2d5;padding:10px 0}.managed-user strong{min-width:180px}
+
+.drag-point-icon{border:0;background:none;cursor:grab}.drag-point-icon span{display:block;width:18px;height:18px;margin:3px;border:2px solid #fff;border-radius:50%;box-shadow:0 0 0 2px #20583c,0 2px 6px #3338}.drag-point-icon:active{cursor:grabbing}
