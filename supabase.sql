@@ -4,7 +4,9 @@ create table if not exists public.marking_members (
   user_id uuid primary key references auth.users(id) on delete cascade,
   display_name text not null check (length(trim(display_name)) between 1 and 80),
   role text not null default 'petugas' check (role in ('admin','petugas')),
-  job text not null default 'sensus' check (job in ('sensus','panen'))
+  job text not null default 'sensus' check (job in ('sensus','panen')),
+  report_access boolean not null default false,
+  map_access boolean not null default false
 );
 alter table public.marking_members enable row level security;
 revoke all on public.marking_members from public, anon, authenticated;
